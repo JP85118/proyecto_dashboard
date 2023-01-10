@@ -1,0 +1,54 @@
+body{
+  background-color: #F8F4EA;
+}
+
+.main{
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main_title{
+  font-size: 4rem;
+}
+
+.main_subtitle{
+  font-size: 2rem;
+}
+
+.register_title, 
+.login_title {
+  font-size: 1.5rem;
+}
+
+.container{
+  display: flex;
+  justify-content: center;
+  margin: 2rem auto;
+}
+
+.container_register, 
+.container_login {
+  margin: auto 3rem;
+}
+
+.btn{
+  padding: 1.2rem;
+  border: none;
+  background-color: #579BB1;
+  border-radius: 10px;
+  font-size: 1rem;
+  text-decoration: none;
+  margin: 1rem 4rem;
+  color: white;
+  transition: all 450ms ease;
+}
+
+.btn:hover{
+  background-color: rgb(255, 255, 255);
+  color: black;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}

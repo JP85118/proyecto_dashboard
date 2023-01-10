@@ -1,0 +1,73 @@
+body{
+  background-color: #F8F4EA;
+}
+
+.title{
+  text-align: center;
+  font-size: 3rem;
+}
+
+.list_item{
+  color: rgb(187, 23, 23);
+  list-style: none;
+  text-align: center;
+}
+
+.container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.container_email,
+.container_password{
+  padding: .5rem;
+}
+
+input{
+  width: 18rem;
+  height: 2rem;
+  border-radius: .5rem;
+  border: none;
+  outline: none;
+}
+
+.btn{
+  margin-top: 1rem;
+  margin-left: .6rem;
+}
+
+.btn_input:hover{
+  color: white;
+  background-color: black;
+  transition: all 400ms ease;
+}
+
+.text{
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.text > a{
+  text-decoration: none;
+  color: white;
+}
+
+.text > a:hover{
+  color: rgb(165, 182, 181);
+}
+
+.inicio{
+  text-decoration: none;
+  color: white;
+  margin-left: 8rem;
+  font-size: 1.4rem;
+  margin-top: 1.3rem;
+}
+
+.inicio:hover{
+  color: rgb(165, 182, 181);
+}

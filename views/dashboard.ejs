@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+</head>
+<body>
+  <a href="/users/logout">Cerrar Sesión</a>
+  <h1>Bienvenido <%= user %> </h1>
+  <h3>TODO APP</h3>
+  <form action="/users/dashboard" method="post">
+    <input type="text" name="description" id="description" placeholder="Agrega tu tarea">
+    <button>Add</button>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>Descripcion</th>
+        <th>Opcion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% todoList.forEach(element => { %>
+        <tr>
+          <td><%= element.description %></td>
+          <td>
+            <form action="/users/dashboard/<%= element.id %>" method="post">
+              <button type="submit">Editar</button>
+            </form>
+            <form action="/users/dashboard/<%= element.id %>" method="delete">
+              <button type="submit">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+      <%});%>  
+    </tbody>
+  </table>
+</body>
+</html>

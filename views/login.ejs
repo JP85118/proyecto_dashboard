@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/stylesheet/login.css">
+</head>
+
+<body>
+  <h1 class="title">Login</h1>
+  <ul class="list">
+    <% if(messages.success_msg){ %>
+      <li class="list_item">
+        <%= messages.success_msg %>
+      </li>
+      <%}%>
+  </ul>
+
+  <ul class="list">
+    <% if(messages.error){ %>
+      <li class="list_item">
+        <%= messages.error %>
+      </li>
+      <% } %>
+  </ul>
+  <div class="container">
+    <form action="/users/login" method="post">
+      <div class="container_email">
+        <input type="email" id="email" name="email" placeholder="Correo Electronico" required>
+      </div>
+      <div class="container_password">
+        <input type="password" id="password" name="password" placeholder="Contraseña" required>
+      </div>
+      <div class="btn">
+        <input type="submit" value="Login" class="btn_input">
+      </div>
+      <p class="text">¿Aun no tienes una cuenta? <a href="/users/register">Register</a></p>
+      <p class="text olvido">¿Olvido de Contraseña? <a href="/users/olvidoCon">Recuperar</a></p>
+      <a class="inicio" href="/">Inicio</a>
+    </form>
+  </div>
+</body>
+
+</html>
