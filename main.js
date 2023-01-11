@@ -206,7 +206,7 @@ app.post("/users/dashboard", async (req, res) => {
   }
 });
 
-app.put("/users/dashboard/:id", async (req, res) => {
+app.post("/users/dashboard/:id", async (req, res) => {
   const { id } = req.params;
   const { description } = req.body;
   req.session.editing = id;

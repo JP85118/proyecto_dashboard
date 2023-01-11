@@ -30,7 +30,7 @@
         <tr>
           <td>
             <% if(req.session.editing && element.id === parseInt(req.session.editing)) { %>
-              <form action="/users/dashboard/<%= element.id %>" method="put">
+              <form action="/users/dashboard/<%= element.id %>" method="post">
                 <input type="text" name="description" value="<%= element.description %>" required>
                 <button type="submit">Guardar</button>
               </form>
