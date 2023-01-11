@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
+
 </head>
+
 <body>
   <a href="/users/logout">Cerrar Sesión</a>
-  <h1>Bienvenido <%= user %> </h1>
+  <h1>Bienvenido <%= user %>
+  </h1>
   <h3>TODO APP</h3>
   <form action="/users/dashboard" method="post">
     <input type="text" name="description" id="description" placeholder="Agrega tu tarea">
@@ -24,7 +28,16 @@
     <tbody>
       <% todoList.forEach(element => { %>
         <tr>
-          <td><%= element.description %></td>
+          <td>
+            <% if(req.session.editing && element.id === parseInt(req.session.editing)) { %>
+              <form action="/users/dashboard/<%= element.id %>" method="put">
+                <input type="text" name="description" value="<%= element.description %>" required>
+                <button type="submit">Guardar</button>
+              </form>
+            <% } else { %>
+              <%= element.description %>
+            <% } %>
+          </td>
           <td>
             <form action="/users/dashboard/<%= element.id %>" method="post">
               <button type="submit">Editar</button>
@@ -34,8 +47,9 @@
             </form>
           </td>
         </tr>
-      <%});%>  
+      <% }); %>  
     </tbody>
   </table>
 </body>
-</html>
+
+</html> 

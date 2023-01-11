@@ -7,6 +7,7 @@ const flash = require("express-flash");
 const passport = require("passport");
 const inizializePassport = require("./passportConfig");
 const path = require("path");
+const expressLayouts = require('express-ejs-layouts')
 
 inizializePassport(passport);
 
@@ -26,8 +27,10 @@ app.use(passport.session());
 app.use(passport.initialize());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+app.use(expressLayouts);
+app.set('layout', 'layout');
 
-//* routes get
+//* routes get-----------------------------------------------------------------
 app.get("/", (req, res) => {
   //res.send('Welcome to the app!')
   res.render("index");
@@ -51,6 +54,7 @@ app.get("/users/dashboard", checkNotAuthenticated, async (req, res) => {
     res.render("dashboard", {
       user: req.user.username,
       todoList: todoList.rows,
+      req: req,
     });
   } catch (error) {
     console.log(error);
@@ -67,7 +71,7 @@ app.get("/users/logout", (req, res) => {
   res.redirect("/");
 });
 
-//* routes post
+//* routes post------------------------------------------------------------------
 app.post("/users/register", async (req, res) => {
   //?desestructuracion de los datos del formulario
   let { username, email, password, password2 } = req.body;
@@ -148,7 +152,7 @@ app.post(
   })
 );
 
-//? route para actualizar la contraseña
+//? route para actualizar la contraseña-----------------------------------------
 
 app.post("/users/olvidoCon", async (req, res) => {
   const { email, password } = req.body;
@@ -166,7 +170,7 @@ app.post("/users/olvidoCon", async (req, res) => {
   );
 });
 
-//? funciones para verificar si esta autentificado
+//? funciones para verificar si esta autentificado-------------------------------
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return res.redirect("/users/dashboard");
@@ -181,15 +185,15 @@ function checkNotAuthenticated(req, res, next) {
   res.redirect("/");
 }
 
-//*Configuracion de las solicitudes para el todo app
+//*Configuracion de las solicitudes para el todo app-----------------------------
 
 app.post("/users/dashboard", async (req, res) => {
+  const todoList = [];
   try {
     const { description } = req.body;
     const newTodo = await pool.query(
-      `
-      INSERT INTO todolist(description) 
-      VALUES($1) RETURNING * `,
+      `INSERT INTO todolist(description) 
+        VALUES($1) RETURNING * `,
       [description]
     );
     todoList.push(newTodo.rows[0]);
@@ -202,51 +206,52 @@ app.post("/users/dashboard", async (req, res) => {
   }
 });
 
-app.post("/users/dashboard/:id", (req, res) => {
-  try {
-    const { id } = req.params;
-    const { description } = req.body;
-      pool.query(
-      ` UPDATE todolist SET description =$1 WHERE id = $2 RETURNING * `,
-      [description, id],
-      (err, result) => {
-        if (err) throw err;
-      }
-    );
-    res
-      .status(200)
-      .render("dashboard", {
-        user: req.user.username,
-        todoList: todoList.rows,
-      });
-  } catch (error) {
-    console.error(error);
+app.put("/users/dashboard/:id", async (req, res) => {
+  const { id } = req.params;
+  const { description } = req.body;
+  req.session.editing = id;
+  if (!description) {
+    req.flash("error", "La descripcion no debe estar vacia");
+    res.redirect("/users/dashboard");
+    return;
   }
+  pool.query(
+    `UPDATE todolist SET description = $1 WHERE id = $2`,
+    [description, id],
+    (err, result) => {
+      if(err){
+        req.flash("error", "Ocurrió un error al actualizar la tarea");
+        res.redirect("/users/dashboard");
+        return;
+      }
+      console.log(result.rows);
+    }
+  );
+  const todoList = await pool.query(`SELECT * FROM todolist`);
+  res.render("dashboard", {
+    user: req.user.username,
+    todoList: todoList.rows,
+    req: req,
+  });
 });
 
-app.delete("/users/dashboard/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-      await pool.query(
-      `DELETE FROM todolist WHERE id = $1 RETURNING *`,
-      [id],
-      (err, result) => {
-        if (err) throw err;
-      }
-      );
-      const pos = todoList.findIndex((item) => item.id === id)
-      if(pos !== -1){
-        todoList.splice(pos, 1);
-      }
-    res.redirect('/users/dashboard')
-      .render("dashboard", {
-        user: req.user.username,
-        todoList: todoList.rows,
-      });
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(500)
+app.delete("/users/dashboard/:id", (req, res) => {
+  const { id } = req.params;
+  pool.query(
+    `DELETE FROM todolist(description) WHERE id = $1 RETURNING *`,
+    [id],
+    (err, result) => {
+      throw err;
+    }
+  );
+  const pos = todoList.findIndex((item) => item.id === id);
+  if (pos !== -1) {
+    todoList.splice(pos, 1);
   }
+  res.redirect("/users/dashboard").render("dashboard", {
+    user: req.user.username,
+    todoList: todoList.rows,
+  });
 });
 
 const PORT = process.env.PORT || 3000;
